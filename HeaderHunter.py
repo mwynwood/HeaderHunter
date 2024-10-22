@@ -1,4 +1,5 @@
 import sys
+import os
 
 def get_file_type(file_path):
     # Define magic numbers for common file types
@@ -83,11 +84,27 @@ def get_file_type(file_path):
 
     return 'Unknown file type'
 
+def check_directory(directory_path):
+    if not os.path.isdir(directory_path):
+        print(f"{directory_path} is not a valid directory.")
+        return
+
+    for filename in os.listdir(directory_path):
+        file_path = os.path.join(directory_path, filename)
+        if os.path.isfile(file_path):  # Only check files, not directories
+            file_type = get_file_type(file_path)
+            print(f'{filename}: {file_type}')
+
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python HeaderHunter.py <file_path>")
+    if len(sys.argv) != 3:
+        print("Usage: python HeaderHunter.py -f/d <path>")
         sys.exit(1)
 
-    file_path = sys.argv[1]
-    file_type = get_file_type(file_path)
-    print(f'The file type is: {file_type}')
+    if sys.argv[1] == "-f":
+        file_path = sys.argv[2]
+        file_type = get_file_type(file_path)
+        print(f'The file type is: {file_type}')
+    
+    if sys.argv[1] == "-d":
+        directory_path = sys.argv[2]
+        check_directory(directory_path)
